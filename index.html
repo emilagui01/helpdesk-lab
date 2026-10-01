@@ -515,7 +515,7 @@ mail: jdoe@emillab.local
       <p>Four canned responses (Account Unlocked, Password Reset Complete, Escalated to Systems Administration, Outage Acknowledged) are scoped to the department that uses them and fill in the user's first name and ticket number with <code>%{ticket.name.first}</code> and <code>%{ticket.number}</code>.</p>
 
       <h3 class="sub">SLA tracking</h3>
-      <p>The Emergency outage (#878217) was acknowledged with an internal note and a reply, then deliberately left open past its 4-hour P1 deadline to confirm osTicket flags it as overdue.</p>
+      <p>The Emergency outage (#878217) was acknowledged with an internal note and a reply, then deliberately left open past its P1 deadline to confirm osTicket flags it as overdue. Opened at 8:57 PM, it moved into the <b>Overdue</b> queue shortly after its 4-hour deadline passed.</p>
 
       <div class="shots">
         <figure><a href="o-new-ticket.jpg"><img src="o-new-ticket.jpg" alt="Peter Parker filling in a Password Reset ticket on the portal next to Tony's agent queue" loading="lazy"></a><figcaption>User opens a ticket from the portal</figcaption></figure>
@@ -525,7 +525,7 @@ mail: jdoe@emillab.local
         <figure><a href="o-kb-categories.jpg"><img src="o-kb-categories.jpg" alt="Agent knowledge base categories: Account Access public, IT Procedures private, Network Drive public" loading="lazy"></a><figcaption>Public and internal KB categories</figcaption></figure>
         <figure><a href="o-kb-internal.jpg"><img src="o-kb-internal.jpg" alt="Internal Tier 1 account troubleshooting procedure with PowerShell commands for locked, reset and disabled accounts" loading="lazy"></a><figcaption>Internal Tier 1 procedure</figcaption></figure>
         <figure><a href="o-canned.jpg"><img src="o-canned.jpg" alt="Canned response dropdown in a ticket reply listing the four custom responses" loading="lazy"></a><figcaption>Canned responses in the reply box</figcaption></figure>
-        <figure><a href="overdue.png"><img src="overdue.png" id="overdue-img" alt="Agent queue showing the Emergency outage ticket flagged as overdue after its 4-hour SLA" loading="lazy"></a><figcaption>P1 outage flagged overdue after 4 hours</figcaption></figure>
+        <figure><a href="overdue.jpg"><img src="overdue.jpg" id="overdue-img" alt="Agent queue showing the Emergency outage ticket flagged as overdue after its 4-hour SLA" loading="lazy"></a><figcaption>P1 outage alone in the Overdue queue</figcaption></figure>
       </div>
     </div>
   </section>
@@ -547,7 +547,7 @@ mail: jdoe@emillab.local
         <li class="okk">Tier 1 to Tier 2 transfer recorded in ticket history</li>
         <li class="okk">Internal KB article hidden from portal users</li>
         <li class="okk">Canned responses fill in user name and ticket number</li>
-        <li class="wait" id="overdue-check">P1 outage ticket #878217 flagged overdue after 4 hours</li>
+        <li class="wait" id="overdue-check">P1 outage ticket #878217 moved to the Overdue queue after its 4-hour SLA</li>
       </ul>
     </div>
   </section>
@@ -779,7 +779,7 @@ mail: jdoe@emillab.local
     var li = document.getElementById("overdue-check");
     if (li) { li.classList.remove("wait"); li.classList.add("okk"); }
   };
-  probe.src = "overdue.png";
+  probe.src = "overdue.jpg";
 })();
 </script>
 </body>

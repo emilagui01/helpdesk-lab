@@ -28,7 +28,7 @@ A self-hosted osTicket help desk on Ubuntu Server 24.04, connected to the Active
 - [x] LDAP / Active Directory plugin with a read-only service account, verified with `ldapsearch`
 - [x] Five tickets worked end to end, including a Tier 1 to Tier 2 escalation
 - [x] Public knowledge base articles, an internal Tier 1 procedure, and four canned responses
-- [x] SLA tracking with a P1 outage left past its deadline
+- [x] SLA tracking: a P1 outage left past its 4-hour deadline lands in the Overdue queue
 
 ## Troubleshooting highlights
 
@@ -59,7 +59,7 @@ b-*.jpg        Phase 1: build
 c-*.jpg        Phase 2: configure
 o-*.jpg        Phase 3: operate
 t-*.jpg        Troubleshooting evidence
-overdue.png    SLA overdue screenshot
+overdue.jpg    SLA overdue screenshot
 ```
 
 ---
