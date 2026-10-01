@@ -257,30 +257,42 @@
 
   <!-- ===================== NETWORK ===================== -->
   <section class="window" id="network" aria-labelledby="h-net">
-    <div class="titlebar"><span class="tb-left"><i></i><i></i></span><span class="title">cat /etc/hosts</span><span class="btns"><b>&#8211;</b><b>&#9633;</b><b class="x">&#215;</b></span></div>
+    <div class="titlebar"><span class="tb-left"><i></i><i></i></span><span class="title">cat lab-network.txt</span><span class="btns"><b>&#8211;</b><b>&#9633;</b><b class="x">&#215;</b></span></div>
     <div class="term">
       <h2 class="sr" id="h-net">Network</h2>
       <p class="prompt"><span class="u">admin01@helpdesk1</span>:<span class="p">~/lab2</span>$ <span class="cmd">cat lab-network.txt</span></p>
-<pre class="diagram" aria-label="Network diagram: the host laptop JARVIS provides NAT at 192.168.50.1 to the LabSwitch internal switch. DC01 at 192.168.50.10 provides AD, DNS and DHCP. HELPDESK1 at 192.168.50.20 runs osTicket and queries DC01 over LDAP port 389. CLIENT01 at 192.168.50.100 uses the help desk portal over HTTP.">
-               Internet
-                  |
-   +--------------+------------------+
-   |  <b>JARVIS</b>  host laptop, Hyper-V     |
-   |  LabNAT gateway 192.168.50.1     |
-   +--------------+------------------+
-                  |
-         [ <b>LabSwitch</b> ]  192.168.50.0/24
-                  |
-   +--------------+-------------+-------------------+
-   |                            |                   |
-+--+--------------+   +---------+--------+   +------+---------+
-| <b>DC01</b>            |   | <b>HELPDESK1</b>        |   | <b>CLIENT01</b>       |
-| .10  static     |<--| .20  static      |<--| .100  DHCP     |
-| AD DS DNS DHCP  |   | Ubuntu 24.04     |   | Windows 11     |
-| svc-osticket    |   | osTicket         |   | portal + agent |
-+-----------------+   +------------------+   +----------------+
-          <em>LDAP :389</em>  ^                 <em>HTTP :80</em>  ^
+<pre class="diagram" aria-label="Network diagram: the host laptop JARVIS runs Hyper-V and provides NAT at 192.168.50.1 to the LabSwitch internal switch, subnet 192.168.50.0/24. Three VMs connect to it: DC01 at 192.168.50.10 (AD DS, DNS, DHCP, svc-osticket), HELPDESK1 at 192.168.50.20 (Ubuntu 24.04, osTicket), and CLIENT01 at 192.168.50.100 by DHCP (Windows 11, portal and agent panel).">
+                     Internet
+                         |
+         +---------------+---------------+
+         |  <b>JARVIS</b>  host laptop, Hyper-V |
+         |  LabNAT  gateway 192.168.50.1 |
+         +---------------+---------------+
+                         |
+            [ <b>LabSwitch</b> ]  192.168.50.0/24
+                         |
+     +-------------------+-------------------+
+     |                   |                   |
++----+-----------+  +----+-----------+  +----+-----------+
+| <b>DC01</b>           |  | <b>HELPDESK1</b>      |  | <b>CLIENT01</b>       |
+| 192.168.50.10  |  | 192.168.50.20  |  | 192.168.50.100 |
+| static         |  | static         |  | DHCP lease     |
+| AD DS DNS DHCP |  | Ubuntu 24.04   |  | Windows 11     |
+| svc-osticket   |  | osTicket       |  | portal + agent |
++----------------+  +----------------+  +----------------+
 </pre>
+      <p class="prompt"><span class="u">admin01@helpdesk1</span>:<span class="p">~/lab2</span>$ <span class="cmd">cat lab-flows.txt</span></p>
+      <div class="tbl"><table>
+        <thead><tr><th>From</th><th>To</th><th>Port</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>HELPDESK1</td><td>DC01</td><td class="y">53</td><td>DNS: name resolution for the server</td></tr>
+          <tr><td>HELPDESK1</td><td>DC01</td><td class="y">389</td><td>LDAP: directory lookups as svc-osticket</td></tr>
+          <tr><td>CLIENT01</td><td>HELPDESK1</td><td class="y">80</td><td>HTTP: client portal and Staff Control Panel</td></tr>
+          <tr><td>JARVIS</td><td>HELPDESK1</td><td class="y">22</td><td>SSH: server administration</td></tr>
+          <tr><td>HELPDESK1</td><td>Internet</td><td class="y">80/443</td><td>Package updates and the osTicket download, through host NAT</td></tr>
+        </tbody>
+      </table></div>
+      <p class="prompt"><span class="u">admin01@helpdesk1</span>:<span class="p">~/lab2</span>$ <span class="cmd">cat netplan-summary.txt</span></p>
       <div class="tbl"><table>
         <thead><tr><th>Setting</th><th>Value</th></tr></thead>
         <tbody>
