@@ -7,7 +7,7 @@
 <meta name="description" content="osTicket help desk on Ubuntu Server 24.04, integrated with an Active Directory lab domain: SLA tiers, departments, help topics, Tier 1 and Tier 2 agents, escalation, knowledge base, and a troubleshooting log.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Ubuntu+Mono:wght@400;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --page: #1a0a16;
@@ -183,9 +183,184 @@
 
   footer { text-align: center; color: var(--dim); font-size: 15px; margin-top: 6px; }
   footer a { margin: 0 6px; }
+
+  /* ================= View bar + easy-read view =================
+     Easy-read keeps ALL of the project content, restyled into a light,
+     readable layout, with a plain-English note at the start of each part. */
+  html { scroll-padding-top: 64px; }
+  .view-bar {
+    position: sticky; top: 0; z-index: 1000;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    padding: 10px 20px;
+    background: linear-gradient(#262c34, #1b2026); border-bottom: 2px solid #0c0e11;
+    font-family: "Atkinson Hyperlegible", "Segoe UI", Arial, sans-serif; font-size: 14px; line-height: 1.3;
+  }
+  .view-bar .vb-home { color: #c9d3de; text-decoration: none; font-weight: 700; }
+  .view-bar .vb-home:hover { color: #fff; }
+  .view-toggle {
+    font-family: inherit; font-size: 14px; font-weight: 700; line-height: 1.2; letter-spacing: 0;
+    padding: 8px 14px; border-radius: 6px; cursor: pointer; white-space: nowrap;
+    border: 2px solid #ffb547; background: #ffb547; color: #1a1200;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .view-toggle:hover { background: #ffc875; }
+  .view-toggle:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+  .view-toggle .aa { font-size: 15px; background: #1a1200; color: #ffb547; border-radius: 4px; padding: 1px 5px; }
+  .view-toggle .to-tech { display: none; }
+  body.easy .view-toggle .to-easy { display: none; }
+  body.easy .view-toggle .to-tech { display: inline; }
+  body.easy .view-bar { background: #fff; border-bottom: 1px solid #d9dee4; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+  body.easy .view-bar .vb-home { color: #1a5fb4; }
+  body.easy .view-toggle { background: #fff; color: #1a5fb4; border-color: #1a5fb4; }
+  body.easy .view-toggle:hover { background: #eaf1fb; }
+  body.easy .view-toggle:focus-visible { outline-color: #1a5fb4; }
+  body.easy .view-toggle .aa { background: #1a5fb4; color: #fff; }
+
+  .easy-view, .ev-explain { display: none; }
+  body.easy .easy-view, body.easy .ev-explain { display: block; }
+
+  body.easy {
+    background: #f4f6f8 !important; background-image: none !important; color: #1f2933;
+    font-family: "Atkinson Hyperlegible", "Segoe UI", Arial, sans-serif; font-size: 18px; line-height: 1.7;
+  }
+  body.easy h1, body.easy h2, body.easy h3 { font-family: inherit; }
+  body.easy pre, body.easy code {
+    font-family: Consolas, "Cascadia Mono", "JetBrains Mono", "Ubuntu Mono", "Lucida Console", monospace;
+  }
+
+  .ev-explain {
+    background: #eef5ff; border-left: 4px solid #1a5fb4; border-radius: 0 8px 8px 0;
+    padding: 12px 16px; margin: 6px 0 18px; color: #1f2933;
+    font-family: "Atkinson Hyperlegible", "Segoe UI", Arial, sans-serif; font-size: 17px; line-height: 1.6;
+    white-space: normal;
+  }
+  .ev-explain b { color: #0f3f80; }
+
+  .ev-main { max-width: 820px; margin: 0 auto; padding: 28px 20px 8px; border: 0; min-width: 0; }
+  .easy-view h1 { font-size: clamp(30px, 5.5vw, 42px); line-height: 1.2; margin: 4px 0 14px; color: #1f2933; font-weight: 700; }
+  .easy-view h2 { font-size: 24px; line-height: 1.3; margin: 0 0 12px; color: #1f2933; }
+  .easy-view h3 { font-size: 19px; margin: 0 0 4px; color: #1f2933; }
+  .easy-view p { margin: 0 0 12px; }
+  .easy-view a { color: #1a5fb4; }
+  .ev-kicker { color: #1e7a3c; font-weight: 700; font-size: 16px; margin: 0 !important; }
+  .ev-lede { font-size: 20px; color: #3e4c59; }
+  .ev-card { background: #fff; border: 1px solid #d9dee4; border-radius: 10px; padding: 24px 28px; margin: 20px 0; }
+  .ev-card ul { margin: 0; padding-left: 24px; }
+  .ev-card li { margin: 6px 0; }
+  .ev-card > p:last-child { margin-bottom: 0; }
+  .ev-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .ev-stats div { background: #f4f6f8; border-radius: 8px; padding: 12px 14px; }
+  .ev-stats b { display: block; font-size: 30px; line-height: 1.1; color: #1a5fb4; }
+  .ev-stats span { font-size: 16px; color: #3e4c59; }
+  .ev-tags { list-style: none; padding: 0 !important; display: flex; flex-wrap: wrap; gap: 8px; }
+  .ev-tags li { margin: 0 !important; background: #eaf1fb; color: #0f3f80; border-radius: 20px; padding: 3px 12px; font-size: 16px; }
+  .ev-divider { margin: 36px 0 6px !important; font-size: 28px !important; }
+  .ev-divider + p { color: #3e4c59; }
+
+  @media (max-width: 600px) {
+    .view-bar { padding: 8px 12px; font-size: 13px; }
+    .view-toggle { font-size: 13px; padding: 7px 10px; }
+    .vb-long { display: none; }
+    .ev-card { padding: 20px 18px; }
+    body.easy { font-size: 17px; }
+  }
+  @media print { .view-bar { display: none; } }
+  body.easy .titlebar, body.easy .prompt, body.easy .cursor, body.easy .fetch pre.art,
+  body.easy .swatch, body.easy .fetch .rule, body.easy .fetch h1 + div, body.easy .tmux .sess { display: none !important; }
+  body.easy .wrap { padding-top: 8px; }
+  body.easy .window { background: #fff; border: 1px solid #d9dee4; border-radius: 10px; box-shadow: none; }
+  body.easy .term { color: #1f2933; padding: 24px 28px 26px; }
+  body.easy .fetch { grid-template-columns: 1fr; margin-top: 0; }
+  body.easy .fetch h1 { color: #1f2933; }
+  body.easy h2.sr { position: static; width: auto; height: auto; overflow: visible; clip: auto; font-size: 26px; color: #1f2933; margin: 0 0 8px; }
+  body.easy .kv dt { color: #52606d; }
+  body.easy .tmux { background: transparent; gap: 8px; font-size: 15px; }
+  body.easy .tmux a { color: #1a5fb4; border: 1px solid #c9d6e8; border-radius: 6px; padding: 4px 12px; background: #fff; }
+  body.easy .tmux a:hover, body.easy .tmux a:focus-visible { background: #eaf1fb; color: #0f3f80; }
+  body.easy a { color: #1a5fb4; }
+  body.easy a:hover { color: #0f3f80; }
+  body.easy th { color: #1f2933; border-bottom: 2px solid #d9dee4; }
+  body.easy td { border-bottom: 1px solid #eceff2; }
+  body.easy td.r { color: #b42318; font-weight: 700; } body.easy td.y { color: #8a5a00; font-weight: 700; }
+  body.easy td.g { color: #1e7a3c; font-weight: 700; } body.easy td.b { color: #1a5fb4; font-weight: 700; }
+  body.easy pre.code { color: #eeeeec; }
+  body.easy pre.out { background: #22071a; color: #eeeeec; padding: 12px 14px; border-radius: 6px; }
+  body.easy pre.diagram { background: #22071a; }
+  body.easy .tag { color: #52606d; border-color: #d9dee4; }
+  body.easy .step h3, body.easy .sub { color: #1f2933; }
+  body.easy .step h3 .n { color: #1a5fb4; }
+  body.easy .sub { border-left-color: #1a5fb4; font-size: 20px; }
+  body.easy .comment, body.easy .dim { color: #52606d; }
+  body.easy .ok { color: #1e7a3c; } body.easy .warn { color: #8a5a00; }
+  body.easy pre.out .ok { color: #8ae234; } body.easy pre.out .warn { color: #fce94f; } body.easy pre.out .dim { color: #b9a6b3; }
+  body.easy p code, body.easy li code, body.easy .row code, body.easy dd code { background: #f1f3f5; color: #8a1c1c; padding: 0 4px; border-radius: 3px; }
+  body.easy .boot li.okk::before { color: #1e7a3c; }
+  body.easy .boot li.wait::before { color: #8a5a00; }
+  body.easy .issue { background: #fdf3f3; }
+  body.easy .issue .head { color: #a61b1b; }
+  body.easy .issue .meta { color: #7a4a4a; }
+  body.easy .issue .lbl { color: #52606d; font-weight: 700; }
+  body.easy .issue .fix .lbl { color: #1e7a3c; }
+  body.easy .known { background: #fff8e6; border-left-color: #d9a400; }
+  body.easy .known .head { color: #7a5a00; }
+  body.easy figure { background: #fff; border-color: #d9dee4; }
+  body.easy figcaption { color: #3e4c59; }
+  body.easy figcaption::before { content: none; }
+  body.easy footer { color: #52606d; }
+  @media (max-width: 600px) { body.easy .term { padding: 18px 16px 20px; } }
 </style>
 </head>
 <body>
+<script>
+  // Apply the saved view before the page draws. Shared with the main portfolio page,
+  // so a visitor who picked easy-read there sees it here too. ?view=easy forces it.
+  (function () {
+    var v = null;
+    try { v = new URLSearchParams(location.search).get('view'); } catch (e) {}
+    if (v !== 'easy' && v !== 'tech') { try { v = localStorage.getItem('portfolio-view'); } catch (e) {} }
+    if (v === 'easy') document.body.classList.add('easy');
+  })();
+</script>
+<div class="view-bar">
+  <a class="vb-home" href="https://emilagui01.github.io/">&larr; <span class="vb-long">Emil Aguirre Herrera &middot; </span>Portfolio</a>
+  <button class="view-toggle" id="viewToggle" type="button">
+    <span class="aa" aria-hidden="true">Aa</span>
+    <span class="to-easy">Easy-read view</span>
+    <span class="to-tech">Switch to tech view</span>
+  </button>
+</div>
+<div class="easy-view"><main class="ev-main">
+  <p class="ev-kicker">Home Lab 2 of 3 &middot; Completed</p>
+  <h1>IT help desk request system</h1>
+  <p class="ev-lede">When employees have a computer problem, they send a request, called a ticket, to the IT help
+    desk. I set up the software a help desk uses to receive, sort and track those requests, on a Linux server I built
+    myself, and ran it like a small company's support team.</p>
+  <section class="ev-card">
+    <h2>The short version</h2>
+    <ul>
+      <li>A Linux server that I installed, secured and managed remotely.</li>
+      <li>A help desk website where employees submit problems, plus a separate side where IT staff work on them.</li>
+      <li>Each request is sent to the right team automatically, and urgent problems get faster deadlines.</li>
+      <li>Two levels of support: front-line staff handle everyday issues and pass harder or sensitive ones to
+        senior staff.</li>
+      <li>Help articles so employees can fix common problems on their own, and saved reply templates.</li>
+      <li>Connected to the company account system from <a href="https://emilagui01.github.io/ad-homelab/">Lab 1</a>
+        with a limited account that can only look things up.</li>
+    </ul>
+  </section>
+  <section class="ev-card">
+    <h2>Skills this shows</h2>
+    <ul class="ev-tags">
+      <li>Linux (Ubuntu Server)</li><li>Help desk software (osTicket)</li><li>Ticket routing and deadlines</li>
+      <li>Escalation</li><li>Writing help articles</li><li>Web server and database setup</li>
+      <li>Connecting systems securely</li><li>Troubleshooting</li>
+    </ul>
+  </section>
+  <h2 class="ev-divider">Full project details</h2>
+  <p>Below is everything from the project. Each part starts with a short plain-English note. The dark boxes are the
+    exact commands I ran, kept as proof of the work.</p>
+</main></div>
+
 <div class="wrap">
 
   <!-- ===================== HEADER ===================== -->
@@ -243,6 +418,7 @@
     <div class="titlebar"><span class="tb-left"><i></i><i></i></span><span class="title">cat README</span><span class="btns"><b>&#8211;</b><b>&#9633;</b><b class="x">&#215;</b></span></div>
     <div class="term">
       <h2 class="sr" id="h-ov">Overview</h2>
+<div class="ev-explain"><b>In plain English:</b> What this project is: a help desk system on a Linux server, run like a small company's IT support team, and connected to the company account system from my first project.</div>
       <p class="prompt"><span class="u">admin01@helpdesk1</span>:<span class="p">~/lab2</span>$ <span class="cmd">cat README</span></p>
       <p>A self-hosted IT help desk built on a Linux server and run like a small company's support team. Users submit tickets through a portal; help topics route each ticket to the right team with the right priority and SLA; a Tier 1 technician works account issues and escalates anything that needs authorization to Tier 2; recurring fixes are written up as knowledge base articles and canned responses.</p>
       <p>It builds directly on the <a href="https://emilagui01.github.io/ad-homelab/">Active Directory lab</a>: the server resolves names through the domain controller, osTicket connects to AD with a least-privilege service account, and the tickets worked here are the same account problems practiced in Lab 1.</p>
@@ -260,6 +436,7 @@
     <div class="titlebar"><span class="tb-left"><i></i><i></i></span><span class="title">cat lab-network.txt</span><span class="btns"><b>&#8211;</b><b>&#9633;</b><b class="x">&#215;</b></span></div>
     <div class="term">
       <h2 class="sr" id="h-net">Network</h2>
+<div class="ev-explain"><b>In plain English:</b> How the server fits into the lab network. The first table shows which machines talk to each other and why. The second shows the server's own network settings.</div>
       <p class="prompt"><span class="u">admin01@helpdesk1</span>:<span class="p">~/lab2</span>$ <span class="cmd">cat lab-network.txt</span></p>
 <pre class="diagram" aria-label="Network diagram: the host laptop JARVIS runs Hyper-V and provides NAT at 192.168.50.1 to the LabSwitch internal switch, subnet 192.168.50.0/24. Three VMs connect to it: DC01 at 192.168.50.10 (AD DS, DNS, DHCP, svc-osticket), HELPDESK1 at 192.168.50.20 (Ubuntu 24.04, osTicket), and CLIENT01 at 192.168.50.100 by DHCP (Windows 11, portal and agent panel).">
                      Internet
@@ -311,6 +488,7 @@
     <div class="titlebar"><span class="tb-left"><i></i><i></i></span><span class="title">history | phase 1: build</span><span class="btns"><b>&#8211;</b><b>&#9633;</b><b class="x">&#215;</b></span></div>
     <div class="term">
       <h2 class="sr" id="h-build">Phase 1: Build</h2>
+<div class="ev-explain"><b>In plain English:</b> Phase 1, setting up the server. I created the virtual machine, installed Linux, added the web server and database the help desk needs, installed the help desk software, then locked down its setup files so they can't be misused.</div>
       <p class="prompt"><span class="u">admin01@helpdesk1</span>:<span class="p">~/lab2</span>$ <span class="cmd">history | grep phase1</span></p>
 
       <div class="step">
@@ -400,6 +578,7 @@ sudo rm -rf /var/www/osticket/setup</pre>
     <div class="titlebar"><span class="tb-left"><i></i><i></i></span><span class="title">history | phase 2: configure</span><span class="btns"><b>&#8211;</b><b>&#9633;</b><b class="x">&#215;</b></span></div>
     <div class="term">
       <h2 class="sr" id="h-cfg">Phase 2: Configure</h2>
+<div class="ev-explain"><b>In plain English:</b> Phase 2, setting it up like a real IT team. Urgent requests get faster deadlines, from 4 hours for an outage to 72 hours for a simple question. Each type of request goes to the right team automatically. Front-line staff only see what they need, and senior staff handle sensitive work. The help desk reads from the company account system using a limited account that can only look things up, not change anything.</div>
       <p class="prompt"><span class="u">admin01@helpdesk1</span>:<span class="p">~/lab2</span>$ <span class="cmd">history | grep phase2</span></p>
 
       <h3 class="sub">SLA plans</h3>
@@ -475,6 +654,7 @@ mail: jdoe@emillab.local
     <div class="titlebar"><span class="tb-left"><i></i><i></i></span><span class="title">history | phase 3: operate</span><span class="btns"><b>&#8211;</b><b>&#9633;</b><b class="x">&#215;</b></span></div>
     <div class="term">
       <h2 class="sr" id="h-op">Phase 3: Operate</h2>
+<div class="ev-explain"><b>In plain English:</b> Phase 3, actually running the help desk. Employees submitted requests, and each one went to the right team on its own. One request about a disabled account was passed from front-line staff to senior staff and resolved in 24 minutes, with every step recorded. I also wrote help articles and reply templates, and tested that a request left too long gets flagged as overdue.</div>
       <p class="prompt"><span class="u">admin01@helpdesk1</span>:<span class="p">~/lab2</span>$ <span class="cmd">history | grep phase3</span></p>
 
       <h3 class="sub">Tickets submitted through the portal</h3>
@@ -535,6 +715,7 @@ mail: jdoe@emillab.local
     <div class="titlebar"><span class="tb-left"><i></i><i></i></span><span class="title">sudo ./verify.sh</span><span class="btns"><b>&#8211;</b><b>&#9633;</b><b class="x">&#215;</b></span></div>
     <div class="term">
       <h2 class="sr" id="h-ver">Verification</h2>
+<div class="ev-explain"><b>In plain English:</b> A checklist of everything I confirmed works. OK means it was checked and passed.</div>
       <p class="prompt"><span class="u">admin01@helpdesk1</span>:<span class="p">~/lab2</span>$ <span class="cmd">sudo ./verify.sh</span></p>
       <ul class="boot">
         <li class="okk">Apache and MariaDB active; osTicket prerequisites all passing on PHP 8.3.6</li>
@@ -547,7 +728,7 @@ mail: jdoe@emillab.local
         <li class="okk">Tier 1 to Tier 2 transfer recorded in ticket history</li>
         <li class="okk">Internal KB article hidden from portal users</li>
         <li class="okk">Canned responses fill in user name and ticket number</li>
-        <li class="wait" id="overdue-check">P1 outage ticket #878217 moved to the Overdue queue after its 4-hour SLA</li>
+        <li class="okk" id="overdue-check">P1 outage ticket #878217 moved to the Overdue queue after its 4-hour SLA</li>
       </ul>
     </div>
   </section>
@@ -557,6 +738,7 @@ mail: jdoe@emillab.local
     <div class="titlebar"><span class="tb-left"><i></i><i></i></span><span class="title">grep -i error troubleshooting.log</span><span class="btns"><b>&#8211;</b><b>&#9633;</b><b class="x">&#215;</b></span></div>
     <div class="term">
       <h2 class="sr" id="h-ts">Troubleshooting log</h2>
+<div class="ev-explain"><b>In plain English:</b> Problems I didn't plan for and had to figure out. Each one shows the error, the real cause, and the fix.</div>
       <p class="prompt"><span class="u">admin01@helpdesk1</span>:<span class="p">~/lab2</span>$ <span class="cmd">grep -i error troubleshooting.log</span></p>
       <p class="comment"># Real problems hit during the build: symptom, root cause, fix</p>
 
@@ -649,6 +831,7 @@ mail: jdoe@emillab.local
     <div class="titlebar"><span class="tb-left"><i></i><i></i></span><span class="title">cat KNOWN_ISSUES</span><span class="btns"><b>&#8211;</b><b>&#9633;</b><b class="x">&#215;</b></span></div>
     <div class="term">
       <h2 class="sr" id="h-known">Known issues and future work</h2>
+<div class="ev-explain"><b>In plain English:</b> An honest list of what this lab doesn't do yet, and what a real company would do instead. These are the limits of a home lab, not things left broken.</div>
       <p class="prompt"><span class="u">admin01@helpdesk1</span>:<span class="p">~/lab2</span>$ <span class="cmd">cat KNOWN_ISSUES</span></p>
       <div class="known">
         <p class="head">Portal users use local osTicket accounts, not AD sign-in</p>
@@ -674,6 +857,7 @@ mail: jdoe@emillab.local
     <div class="titlebar"><span class="tb-left"><i></i><i></i></span><span class="title">ls ~/labs</span><span class="btns"><b>&#8211;</b><b>&#9633;</b><b class="x">&#215;</b></span></div>
     <div class="term">
       <h2 class="sr" id="h-next">Home lab series</h2>
+<div class="ev-explain"><b>In plain English:</b> How this project connects to my other two projects.</div>
       <p class="prompt"><span class="u">emil@homelab</span>:<span class="p">~</span>$ <span class="cmd">ls -l ~/labs</span></p>
       <div class="tbl"><table>
         <thead><tr><th>#</th><th>Lab</th><th>Status</th><th>Notes</th></tr></thead>
@@ -781,6 +965,14 @@ mail: jdoe@emillab.local
   };
   probe.src = "overdue.jpg";
 })();
+</script>
+<script>
+  (function () {
+    document.getElementById('viewToggle').addEventListener('click', function () {
+      var easy = document.body.classList.toggle('easy');
+      try { localStorage.setItem('portfolio-view', easy ? 'easy' : 'tech'); } catch (e) {}
+    });
+  })();
 </script>
 </body>
 </html>
